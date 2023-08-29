@@ -29,26 +29,26 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string>
 
     }
 
-    // public override int SaveChanges()
-    // {
-    //     ChangeTracker.DetectChanges();
+    public override int SaveChanges()
+    {
+        ChangeTracker.DetectChanges();
 
-    //     var modifiedEntries = ChangeTracker.Entries()
-    //         .Where(e => e.State == EntityState.Modified);
+        var modifiedEntries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Modified);
 
-    //     foreach (var entry in modifiedEntries)
-    //     {
-    //         if (entry.Entity is BaseModel basemodel)
-    //         {
-    //             basemodel.UpdatedAt = DateTime.UtcNow;
-    //         }
+        foreach (var entry in modifiedEntries)
+        {
+            // if (entry.Entity is BaseModel basemodel)
+            // {
+            //     basemodel.UpdatedAt = DateTime.UtcNow;
+            // }
 
-    //         if (entry.Entity is AppUser appuser)
-    //         {
-    //             appuser.UpdatedAt = DateTime.UtcNow;
-    //         }
-    //     }
+            if (entry.Entity is AppUser appuser)
+            {
+                appuser.UpdatedAt = DateTime.UtcNow;
+            }
+        }
 
-    //     return base.SaveChanges();
-    // }
+        return base.SaveChanges();
+    }
 }
