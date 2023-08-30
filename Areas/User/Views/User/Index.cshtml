@@ -1,8 +1,14 @@
-@model IEnumerable<identity.Areas.User.Dtos.User.GetUserDto>
+@* @model IEnumerable<identity.Areas.User.Dtos.User.GetUserDto> *@
+@model X.PagedList.IPagedList<identity.Areas.User.Dtos.User.GetUserDto>
+@using X.PagedList.Mvc.Core
+
+@* @using Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper *@
 
 @{
     ViewData["Title"] = "User Page";
+    @* var model = ViewBag.OnePageOfProducts; *@
 }
+
 
 <!DOCTYPE html>
 
@@ -10,25 +16,37 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <link href="/Content/PagedList.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@using (Html.BeginForm("index", "User", new { area = "User"}, FormMethod.Get))
+{
+    <p>
+        Tìm tên sản phẩm: @Html.TextBox("SearchString", ViewBag.CurentFilter as string)
+        <input type="submit" value="Tìm kiếm" class="btn btn-default" />
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                @* @Html.DisplayNameFor(model => model.UserName) *@ 
+                username 
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @* @Html.DisplayNameFor(model => model.Email) *@ 
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                @* @Html.DisplayNameFor(model => model.PhoneNumber) *@ 
+                PhoneNumber
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreateAt)
+                @* @Html.DisplayNameFor(model => model.CreateAt) *@ 
+                CreateAt
             </th>
             <th></th>
         </tr>
@@ -57,5 +75,9 @@
 }
     </tbody>
 </table>
+@* @Html.PagedListPager( (IPagedList)ViewBag.OnePageOfProducts, page => Url.Action("Index", new { page }) ) *@
+Trang @(@Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index",
+new {page, currentFillter = ViewBag.CurentFilter}))
 </body>
 </html>

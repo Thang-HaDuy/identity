@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using identity.Areas.User.Dtos.User;
+using identity.Areas.User.Models;
 using identity.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using X.PagedList;
 
 
 namespace identity.Areas.User.Services.UserService
@@ -21,25 +22,54 @@ namespace identity.Areas.User.Services.UserService
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<GetUserDto>>> IndexAsync()
-        {
-            var response = new ServiceResponse<List<GetUserDto>>();
-            if (_context.Users != null)
-            {
-                var user = await _context.Users.ToListAsync();
-                response.Data = user.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
-            }
-            else
-            {
-                response.Null = true;
-            }
-            return response;
+        // public async Task<ServiceResponse<IPagedList<GetUserDto>>> IndexAsync(string CurrentFilter, string SearchString, int? Page)
+        // {
+        //     var response = new ServiceResponse<IPagedList<GetUserDto>>();
+        //     int pageSize = 1;
+        //     int pageNumber = (Page ?? 1);
+            
+        //     if (_context.Users == null)
+        //     {
+        //         response.Null = true;
+        //         return response;
+        //     }
 
-        }
+        //     if (SearchString != null)
+        //     {
+        //         Page = 1;
+        //     } 
+        //     else
+        //     {
+        //         SearchString = CurrentFilter;
 
-        public async Task<ServiceResponse<GetUserDto>> DetailAsync(string id)
+        //     }
+
+        //     if (!String.IsNullOrEmpty(SearchString))
+        //     {
+        //         // var user = await _context.Users.Where(u => u.UserName.Contains(SearchString)).OrderByDescending(u => u.UserName).ToPagedListAsync(pageNumber, pageSize);
+        //         // response.Data = user.Select(u => _mapper.Map<IPagedList<GetUserDto>>(u)).ToList();
+        //         var user = await _context.Users.Where(u => u.UserName.Contains(SearchString)).OrderByDescending(u => u.UserName).ToListAsync();
+        //         var data = user.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
+        //         var model = new StaticPagedList<GetUserDto>(data, 1, 1, user.Count());
+        //         response.Data = model;
+        //     }
+        //     else
+        //     {
+        //         // var user = await _context.Users.OrderByDescending(u => u.UserName).OrderByDescending(u => u.UserName).ToPagedListAsync(pageNumber, pageSize);
+        //         // response.Data = user.Select(u => _mapper.Map<IPagedList<GetUserDto>>(u)).ToList();
+        //         var user = await _context.Users.OrderByDescending(u => u.UserName).ToListAsync();
+        //         var data = user.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
+        //         var model = new StaticPagedList<GetUserDto>(data, 1, 1, user.Count());
+        //         response.Data = model;
+        //     }
+
+        //     return response;
+
+        // }
+
+        public async Task<ServiceResponse<AppUser>> DetailAsync(string id)
         {
-            var response = new ServiceResponse<GetUserDto>();
+            var response = new ServiceResponse<AppUser>();
             if (id == null || _context.Users == null)
             {
                 response.Success = false;
@@ -51,22 +81,9 @@ namespace identity.Areas.User.Services.UserService
             }
             else
             {
-                response.Data =  _mapper.Map<GetUserDto>(appUser);
+                response.Data =  appUser;
             }
             return response;
-            // if (id == null || _context.Roles == null)
-            // {
-            //     return NotFound();
-            // }
-
-            // var appRole = await _context.Roles
-            //     .FirstOrDefaultAsync(m => m.Id == id);
-            // if (appRole == null)
-            // {
-            //     return NotFound();
-            // }
-
-            // return View(appRole);
         }
     }
 }

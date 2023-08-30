@@ -10,6 +10,7 @@ using identity.Data;
 using identity.Areas.User.Services.UserService;
 using identity.Areas.User.Dtos.User;
 using identity.Areas.User.Services;
+// using X.PagedList;
 
 namespace identity.Areas.User.Controllers
 {
@@ -26,16 +27,31 @@ namespace identity.Areas.User.Controllers
         }
 
         // GET: User/User
-        public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> Index()
+        // public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> Index(string CurrentFilter, string SearchString, int? Page)
+        // {
+        //     var response = await _userService.IndexAsync(CurrentFilter, SearchString, Page);
+        //     ViewBag.CurrentFilter = CurrentFilter;
+        //     if (response.Null != true)
+        //     {
+        //         return View(response.Data);
+        //     }
+        //     else
+        //     {
+        //         return Problem("Entity set 'Database.User' is null.");
+        //     }
+        // }
+
+        public Task<IActionResult> Index(string CurrentFilter, string SearchString, int? Page)
         {
-            var response = await _userService.IndexAsync();
-            if (response.Null == true)
+            var response = await _userService.IndexAsync(CurrentFilter, SearchString, Page);
+            ViewBag.CurrentFilter = CurrentFilter;
+            if (response.Null != true)
             {
-                return Problem("Entity set 'Database.User'  is null.");
+                return View(response.Data);
             }
             else
             {
-                return View(response.Data);
+                return Problem("Entity set 'Database.User' is null.");
             }
         }
 
@@ -54,7 +70,7 @@ namespace identity.Areas.User.Controllers
         }
 
         // // GET: User/User/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
